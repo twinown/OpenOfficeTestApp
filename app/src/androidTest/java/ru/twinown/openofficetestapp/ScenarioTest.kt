@@ -6,18 +6,27 @@ import org.junit.Before
 import org.junit.runner.RunWith
 import org.junit.Rule
 import org.junit.Test
-import ru.twinown.openofficetestapp.game.LoginPage
+import ru.twinown.openofficetestapp.office.documentPage.DocumentPage
+import ru.twinown.openofficetestapp.office.loginPage.LoginPage
+import ru.twinown.openofficetestapp.office.profilePage.ProfilePage
 
 @RunWith(AndroidJUnit4::class)
 class ScenarioTest {
 
     @get:Rule
-    val activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
+    val activityScenarioRule = ActivityScenarioRule(LoginActivity::class.java)
     private lateinit var loginPage: LoginPage
+    private lateinit var documentPage: DocumentPage
+    private lateinit var profilePage: ProfilePage
+    private lateinit var navigationUi:NavigationUi
 
     @Before
     fun setUp() {
+
         loginPage = LoginPage()
+        documentPage = DocumentPage()
+        profilePage = ProfilePage()
+        navigationUi = NavigationUi()
     }
 
     /*
@@ -27,31 +36,27 @@ class ScenarioTest {
     fun caseNumber1() {
 
         loginPage.assertInitialState()
-        loginPage.assertLoginButtonDisabled()
 
         loginPage.addPortalText(portal = "https://testdocspaceportal.onlyoffice.com/")
-        loginPage.assertValidPortalAdded()
-        loginPage.assertLoginButtonDisabled()
+        loginPage.assertValidPortalAddedState()
 
         loginPage.addEmailText(email = "1one.test901@gmail.com")
-        loginPage.assertValidEmailAdded()
-        loginPage.assertLoginButtonDisabled()
+        loginPage.assertValidEmailAddedState()
 
-        loginPage.addCorrectPasswordText(password = "Testpass123")
-        loginPage.assertLoginButtonEnabled()
+        loginPage.addPasswordText(password = "Testpass123")
+        loginPage.assertCorrectPasswordState()
 
         loginPage.clickLoginAndWait()
-        loginPage.assertDocumentsState()
+        documentPage.assertDocumentsState()
 
-        loginPage.clickNewFolderAndWait()
-        loginPage.assertDocumentNewFolderState()
+        documentPage.clickNewFolderAndWait()
+        documentPage.assertDocumentNewFolderState()
 
-        loginPage.clickProfileAndWait()
-        loginPage.assertProfileState()
+        navigationUi.clickProfile()
+        profilePage.assertProfileState()
 
-        loginPage.clickLogout()
+        profilePage.clickLogout()
         loginPage.assertInitialState()
-        loginPage.checkLoginButtonDisabled()
 
     }
 
@@ -59,34 +64,28 @@ class ScenarioTest {
     fun caseNumber2() {
 
         loginPage.assertInitialState()
-        loginPage.assertLoginButtonDisabled()
+
 
         loginPage.addPortalText("testdocspaceportal.onlyoffice.com/")
         loginPage.assertInvalidPortalState()
-        loginPage.assertLoginButtonDisabled()
-
 
         loginPage.addPortalText(portal = "https://testdocspaceportal.onlyoffice.com/")
-        loginPage.assertValidPortalAdded()
-        loginPage.assertLoginButtonDisabled()
+        loginPage.assertValidPortalAddedState()
 
         loginPage.addEmailText("1one.test901")
-        loginPage.assertInvalidEmailAdded()
-        loginPage.assertLoginButtonDisabled()
+        loginPage.assertInvalidEmailAddedState()
 
 
         loginPage.addEmailText(email = "1one.test901@gmail.com")
-        loginPage.assertValidEmailAdded()
-        loginPage.assertLoginButtonDisabled()
+        loginPage.assertValidEmailAddedState()
 
-        loginPage.addWrongPasswordText()
-        loginPage.assertLoginButtonEnabled()
-
+        //todo пока не пройдёт
+        loginPage.addPasswordText("stpa")
         loginPage.clickLoginAndWait()// ожидаем ошибку!
         loginPage.assertWrongPasswordOrEmailState()
 
-        loginPage.addCorrectPasswordText(password = "Testpass123")
-        loginPage.assertLoginButtonEnabled()
+        loginPage.addPasswordText("1one.test901")
+        loginPage.assertCorrectPasswordState()
         disableWifi() // проверка отсутствия интернета
 
         loginPage.clickLoginAndWait()

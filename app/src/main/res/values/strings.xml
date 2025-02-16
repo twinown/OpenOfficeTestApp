@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">OpenOfficeTestApp</string>
+    <string name="login">Login</string>
+    <string name="invalid_url">Invalid URL!</string>
+    <string name="invalid_email">Invalid Email !</string>
+    <string name="logout">Logout</string>
 </resources>
